@@ -94,6 +94,7 @@ body::before {
   flex: 1;
   margin-top: 20px;
   min-height: 420px;
+  transition: margin-top 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
 }
 
 .text {
@@ -229,9 +230,10 @@ body::before {
     width: 100%;
     margin: 0 0 0 0;
     text-align: center;
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   }
   
-  /* Контейнер для картинки с анимацией */
+  /* Контейнер для картинки */
   .mobile-image-container {
     display: flex;
     justify-content: center;
@@ -269,6 +271,7 @@ body::before {
   .links-mobile-wrapper {
     transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     overflow: hidden;
+    max-height: 100px;
   }
   
   /* Горизонтальные ссылки-кнопки */
@@ -310,13 +313,17 @@ body::before {
   
   /* Текстовая часть с плавным смещением */
   .text-wrapper {
-    position: relative;
     margin-top: 8px;
     min-height: auto;
     transition: margin-top 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   }
   
   /* Когда картинка раздвинута, текст отодвигается вниз */
+  .mobile-assets.expanded + .text-wrapper {
+    margin-top: 24px;
+  }
+  
+  /* Альтернативный селектор на случай, если между ними есть что-то еще */
   .mobile-assets.expanded ~ .text-wrapper {
     margin-top: 24px;
   }
@@ -430,6 +437,7 @@ body::before {
     margin-top: 4px;
   }
   
+  .mobile-assets.expanded + .text-wrapper,
   .mobile-assets.expanded ~ .text-wrapper {
     margin-top: 20px;
   }
@@ -589,8 +597,12 @@ function toggleLang(){
 }
 
 // Функция для раздвигания/сдвигания картинки на мобильных
-function toggleImageExpand() {
-  if (window.innerWidth > 900) return; // только на мобильных
+function toggleImageExpand(event) {
+  // Останавливаем всплытие, чтобы случайно не сработало что-то еще
+  if (event) event.stopPropagation();
+  
+  // Только на мобильных
+  if (window.innerWidth > 900) return;
   
   const mobileAssets = document.getElementById("mobileAssets");
   if (!mobileAssets) return;
@@ -614,11 +626,19 @@ window.onload = () => {
   const mobileImageContainer = document.getElementById("mobileImageContainer");
   
   if (mobileCover) {
+    // Убираем старые обработчики, если были
+    mobileCover.removeEventListener("click", toggleImageExpand);
     mobileCover.addEventListener("click", toggleImageExpand);
+    // Добавляем указатель, чтобы показать что картинка кликабельна
+    mobileCover.style.cursor = "pointer";
   }
   if (mobileImageContainer) {
+    mobileImageContainer.removeEventListener("click", toggleImageExpand);
     mobileImageContainer.addEventListener("click", toggleImageExpand);
   }
+  
+  // Проверяем, что обработчики добавились
+  console.log("Mobile handlers added, isExpanded:", isExpanded);
 }
 
 // параллакс только на десктопе
