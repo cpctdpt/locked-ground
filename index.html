@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-<title>Copycat Department</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Copycat Department — Locked Ground</title>
+<!-- Satoshi шрифт -->
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
 <style>
 * {
   margin: 0;
@@ -15,24 +16,53 @@
 body {
   background: #000;
   color: #fff;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Satoshi', sans-serif;
   min-height: 100vh;
   line-height: 1.6;
   position: relative;
   overflow-x: hidden;
+  font-weight: 400;
 }
 
-/* фон с грейном */
+/* эррозивный черный фон с текстурой, шумом и горизонтальными линиями */
 body::before {
   content: "";
   position: fixed;
   top: 0; left: 0;
   width: 100%;
   height: 100%;
-  background-image:
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      rgba(20, 20, 20, 0.3) 0px,
+      rgba(20, 20, 20, 0.3) 2px,
+      transparent 2px,
+      transparent 6px
+    ),
     url('https://www.transparenttextures.com/patterns/asfalt-dark.png'),
-    linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85));
-  opacity: 0.12;
+    radial-gradient(circle at 30% 40%, rgba(30, 30, 30, 0.5) 0%, rgba(0, 0, 0, 0.95) 100%);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* дополнительный слой шума для эрозии */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="1" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/%3E%3C/svg%3E');
+  opacity: 0.2;
   pointer-events: none;
   z-index: 0;
 }
@@ -40,23 +70,25 @@ body::before {
 /* переключатель языка */
 .lang-switch {
   position: fixed;
-  top: 16px;
-  right: 20px;
+  top: 20px;
+  right: 24px;
   cursor: pointer;
   opacity: 0.6;
   letter-spacing: 2px;
-  z-index: 10;
+  z-index: 20;
   font-size: 13px;
   font-weight: 400;
-  background: rgba(0,0,0,0.4);
-  padding: 6px 12px;
-  border-radius: 20px;
-  backdrop-filter: blur(4px);
-  transition: opacity 0.2s;
+  background: rgba(0,0,0,0.5);
+  padding: 6px 14px;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+  transition: opacity 0.2s, transform 0.2s;
+  font-family: 'Satoshi', monospace;
 }
 
 .lang-switch:hover {
   opacity: 1;
+  transform: scale(1.02);
 }
 
 /* контейнер */
@@ -71,6 +103,7 @@ body::before {
   flex-wrap: wrap;
   max-width: 1400px;
   margin: 0 auto;
+  min-height: 100vh;
 }
 
 /* LEFT */
@@ -78,14 +111,33 @@ body::before {
   flex: 2;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+/* заголовок с дополнительным текстом */
+.title-wrapper {
+  position: relative;
+  margin-bottom: 24px;
 }
 
 .left h1 {
   font-size: 72px;
   line-height: 0.9;
-  margin-bottom: 24px;
   letter-spacing: -0.02em;
-  font-weight: 600;
+  font-weight: 700;
+  margin: 0;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.subtitle-small {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  margin-top: 6px;
+  margin-left: 4px;
+  font-family: 'Satoshi', monospace;
+  text-transform: uppercase;
 }
 
 /* текст */
@@ -97,18 +149,28 @@ body::before {
   transition: margin-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* контейнер для текста с плавным фейдом */
+.text-container {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+}
+
 .text {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  visibility: hidden;
+  transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
   pointer-events: none;
 }
 
 .text.active {
   opacity: 1;
+  visibility: visible;
+  position: relative;
   pointer-events: auto;
 }
 
@@ -116,6 +178,8 @@ body::before {
   font-size: 17px;
   color: #ccc;
   margin-bottom: 18px;
+  font-weight: 400;
+  line-height: 1.65;
 }
 
 /* выделение Locked Ground */
@@ -129,17 +193,18 @@ body::before {
   color: transparent;
   text-shadow: 0 0 8px rgba(255,255,255,0.3);
   display: inline-block;
+  font-family: 'Satoshi', sans-serif;
 }
 
 .lead { 
   font-size: 20px; 
   color: #fff; 
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.5;
 }
 .accent { 
   color: #fff; 
-  font-weight: 500;
+  font-weight: 600;
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 .italic { font-style: italic; }
@@ -154,9 +219,10 @@ body::before {
   opacity: 0.55;
   margin-top: 12px;
   letter-spacing: 0.2px;
+  font-weight: 400;
 }
 
-/* RIGHT (десктопная версия) */
+/* RIGHT (десктопная версия) - увеличенная картинка по умолчанию */
 .right {
   flex: 1;
   display: flex;
@@ -166,20 +232,46 @@ body::before {
   top: 40px;
 }
 
+/* контейнер для картинки на десктопе с анимацией */
+.desktop-image-container {
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .cover {
   width: 100%;
-  max-width: 360px;
+  max-width: 420px;
   margin-bottom: 24px;
-  transition: transform 0.2s ease;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: block;
-  border-radius: 4px;
-  box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+  border-radius: 6px;
+  box-shadow: 0 25px 40px -15px rgba(0,0,0,0.6);
+  cursor: pointer;
+}
+
+/* Увеличенное состояние картинки на десктопе */
+.right.expanded .cover {
+  max-width: 85%;
+  transform: scale(1.02);
+  box-shadow: 0 35px 55px -18px rgba(0,0,0,0.8);
+}
+
+.right.expanded .desktop-image-container {
+  margin-bottom: 15px;
 }
 
 .links {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  transition: all 0.4s ease;
+}
+
+.right.expanded .links {
+  margin-top: 10px;
 }
 
 .links a {
@@ -192,6 +284,7 @@ body::before {
   font-size: 15px;
   font-weight: 400;
   letter-spacing: 0.3px;
+  font-family: 'Satoshi', sans-serif;
 }
 
 .links a:hover { 
@@ -203,6 +296,22 @@ body::before {
   opacity: 0.8;
 }
 
+/* нижний левый угол */
+.bottom-left {
+  position: fixed;
+  bottom: 20px;
+  left: 24px;
+  z-index: 10;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.35);
+  font-family: 'Satoshi', monospace;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
 /* ----- МОБИЛЬНАЯ ВЕРСИЯ ----- */
 @media (max-width: 900px) {
   .container {
@@ -210,15 +319,26 @@ body::before {
     padding: 20px 18px 32px 18px;
     gap: 0;
     min-height: auto;
+    padding-bottom: 60px;
+  }
+  
+  .title-wrapper {
+    margin-bottom: 16px;
   }
   
   .left h1 {
     font-size: 38px;
-    margin-bottom: 18px;
     line-height: 1.1;
+    font-weight: 700;
   }
   
-  /* Скрываем оригинальный правый блок */
+  .subtitle-small {
+    font-size: 8px;
+    margin-top: 4px;
+    letter-spacing: 0.8px;
+  }
+  
+  /* Скрываем оригинальный правый блок на мобильных */
   .right {
     display: none;
   }
@@ -231,7 +351,7 @@ body::before {
     text-align: center;
   }
   
-  /* Контейнер для картинки — он будет расширяться */
+  /* Контейнер для картинки */
   .mobile-image-container {
     display: flex;
     justify-content: center;
@@ -242,35 +362,31 @@ body::before {
     width: 100%;
   }
   
-  /* Картинка в мобильной версии — начальное состояние */
+  /* Картинка в мобильной версии — увеличенная по умолчанию (70% ширины) */
   .cover-mobile {
-    width: 45%;
-    max-width: 160px;
-    min-width: 130px;
+    width: 70%;
+    max-width: 280px;
+    min-width: 180px;
     display: block;
-    border-radius: 8px;
-    box-shadow: 0 12px 24px -8px rgba(0,0,0,0.6);
+    border-radius: 10px;
+    box-shadow: 0 18px 32px -12px rgba(0,0,0,0.7);
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     cursor: pointer;
     object-fit: cover;
   }
   
-  /* РАЗДВИНУТОЕ СОСТОЯНИЕ — картинка занимает минимум половину экрана */
-  .mobile-assets.expanded {
-    margin-bottom: 0;
-  }
-  
+  /* РАЗДВИНУТОЕ СОСТОЯНИЕ на мобильных — еще больше */
   .mobile-assets.expanded .mobile-image-container {
     margin-bottom: 20px;
     width: 100%;
   }
   
   .mobile-assets.expanded .cover-mobile {
-    width: 85%;
-    max-width: none;
+    width: 92%;
+    max-width: 500px;
     min-width: auto;
-    width: min(85%, 500px);
-    box-shadow: 0 25px 45px -12px rgba(0,0,0,0.9);
+    box-shadow: 0 30px 50px -18px rgba(0,0,0,0.9);
+    transform: scale(1.02);
   }
   
   /* Контейнер для ссылок */
@@ -286,7 +402,7 @@ body::before {
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
-    margin: 12px 0 4px 0;
+    margin: 14px 0 4px 0;
     transition: all 0.3s ease;
   }
   
@@ -303,6 +419,7 @@ body::before {
     letter-spacing: 0.3px;
     font-weight: 400;
     backdrop-filter: blur(2px);
+    font-family: 'Satoshi', sans-serif;
   }
   
   .links-mobile a:active {
@@ -318,26 +435,30 @@ body::before {
   
   /* ТЕКСТ — будет сдвигаться вниз когда картинка раздвинута */
   .text-wrapper {
-    margin-top: 8px;
+    margin-top: 12px;
     min-height: auto;
     transition: margin-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   
-  /* Когда картинка раздвинута — текст уезжает вниз */
   .mobile-assets.expanded ~ .text-wrapper,
   .mobile-assets.expanded + .text-wrapper {
     margin-top: 35px;
   }
   
+  .text-container {
+    min-height: auto;
+  }
+  
   .text {
     position: relative;
     opacity: 0;
-    display: none;
+    visibility: hidden;
+    display: block;
   }
   
   .text.active {
-    display: block;
     opacity: 1;
+    visibility: visible;
     position: relative;
   }
   
@@ -345,15 +466,16 @@ body::before {
     font-size: 14px;
     line-height: 1.55;
     margin-bottom: 12px;
+    font-weight: 400;
   }
   
   .lead {
     font-size: 16px;
     line-height: 1.45;
     margin-bottom: 14px;
+    font-weight: 500;
   }
   
-  /* Увеличенное выделение Locked Ground в мобильной версии */
   .locked-ground {
     font-size: 1.3em;
     font-weight: 800;
@@ -378,11 +500,18 @@ body::before {
   
   .accent {
     border-bottom: none;
-    font-weight: 500;
+    font-weight: 600;
+  }
+  
+  .bottom-left {
+    bottom: 12px;
+    left: 16px;
+    font-size: 7px;
+    letter-spacing: 1px;
   }
 }
 
-/* Очень маленькие экраны — картинка раздвигается еще больше */
+/* Очень маленькие экраны */
 @media (max-width: 480px) {
   .container {
     padding: 16px 16px 24px 16px;
@@ -390,18 +519,21 @@ body::before {
   
   .left h1 {
     font-size: 32px;
-    margin-bottom: 12px;
+  }
+  
+  .subtitle-small {
+    font-size: 7px;
   }
   
   .cover-mobile {
-    width: 40%;
-    max-width: 130px;
+    width: 75%;
+    max-width: 240px;
+    min-width: 150px;
   }
   
-  /* В раздвинутом состоянии на маленьких экранах — почти на всю ширину */
   .mobile-assets.expanded .cover-mobile {
-    width: 92%;
-    max-width: 320px;
+    width: 94%;
+    max-width: 340px;
   }
   
   .links-mobile {
@@ -436,7 +568,7 @@ body::before {
   }
   
   .text-wrapper {
-    margin-top: 4px;
+    margin-top: 8px;
   }
   
   .mobile-assets.expanded ~ .text-wrapper,
@@ -445,7 +577,7 @@ body::before {
   }
 }
 
-/* Десктопная версия: мобильные элементы скрыты */
+/* Десктопная версия: дополнительные стили */
 @media (min-width: 901px) {
   .mobile-assets {
     display: none;
@@ -461,7 +593,10 @@ body::before {
 
   <!-- ЛЕВАЯ КОЛОНКА -->
   <div class="left">
-    <h1>Copycat<br>Department</h1>
+    <div class="title-wrapper">
+      <h1>Copycat<br>Department</h1>
+      <div class="subtitle-small">Locked Ground (2026)</div>
+    </div>
     
     <!-- Мобильная вставка с анимацией -->
     <div class="mobile-assets" id="mobileAssets">
@@ -481,99 +616,103 @@ body::before {
     </div>
 
     <div class="text-wrapper" id="textWrapper">
-      <!-- RU -->
-      <div class="text active" id="ru">
-        <p class="lead">
-          <span class="locked-ground">Locked Ground</span> — это акустико-семиотическая конструкция,
-          в которой биографический транзит <span class="accent">Александра Кьеза</span>
-          из Италии в Россию артикулируется через полилингвальный корпус семплов,
-          функционирующих как фоно-археологические артефакты памяти.
-        </p>
+      <div class="text-container">
+        <!-- RU -->
+        <div class="text active" id="ru">
+          <p class="lead">
+            <span class="locked-ground">Locked Ground</span> — это акустико-семиотическая конструкция,
+            в которой биографический транзит <span class="accent">Александра Кьеза</span>
+            из Италии в Россию артикулируется через полилингвальный корпус семплов,
+            функционирующих как фоно-археологические артефакты памяти.
+          </p>
 
-        <p>
-          Латинские и русские фрагменты, включая деконтекстуализированные
-          католические гимны, формируют сакрально-индустриальное звуковое поле,
-          где фамилия автора (Кьеза — «церковь») становится метонимией медиума
-          между прошлым и спекулятивным будущим.
-        </p>
+          <p>
+            Латинские и русские фрагменты, включая деконтекстуализированные
+            католические гимны, формируют сакрально-индустриальное звуковое поле,
+            где фамилия автора (Кьеза — «церковь») становится метонимией медиума
+            между прошлым и спекулятивным будущим.
+          </p>
 
-        <p class="split">
-          Шесть треков образуют нумерологическую матрицу цикла:<br>
-          <span>три из них акцентируют голос как автономный объект</span><br>
-          <span>три — его диалектику с ритмом</span>
-        </p>
+          <p class="split">
+            Шесть треков образуют нумерологическую матрицу цикла:<br>
+            <span>три из них акцентируют голос как автономный объект</span><br>
+            <span>три — его диалектику с ритмом</span>
+          </p>
 
-        <p>
-          Композиции чередуются, формируя пульсирующую структуру восприятия.
-          Музыка редуцируется до <span class="accent">ритуальной машинерии</span>.
-        </p>
+          <p>
+            Композиции чередуются, формируя пульсирующую структуру восприятия.
+            Музыка редуцируется до <span class="accent">ритуальной машинерии</span>.
+          </p>
 
-        <p>
-          Название <span class="locked-ground">Locked Ground</span> — метафора фиксированной идентичности
-          и потенциальной территории звука.
-        </p>
+          <p>
+            Название <span class="locked-ground">Locked Ground</span> — метафора фиксированной идентичности
+            и потенциальной территории звука.
+          </p>
 
-        <p>
-          <i>Copycat Department</i> и исчезающая кошка указывают на процесс
-          симуляции, утраты оригинала и бесконечного воспроизводства смысла.
-        </p>
+          <p>
+            <i>Copycat Department</i> и исчезающая кошка указывают на процесс
+            симуляции, утраты оригинала и бесконечного воспроизводства смысла.
+          </p>
 
-        <p class="small">
-          Процесс создания: 12-битная дискретизация, лоу-фай-текстуры
-          и цифровая эрозия как метод критической реконструкции
-          индустриального воображаемого.
-        </p>
-      </div>
+          <p class="small">
+            Процесс создания: 12-битная дискретизация, лоу-фай-текстуры
+            и цифровая эрозия как метод критической реконструкции
+            индустриального воображаемого.
+          </p>
+        </div>
 
-      <!-- EN -->
-      <div class="text" id="en">
-        <p class="lead">
-          <span class="locked-ground">Locked Ground</span> is an acoustic-semiotic construct
-          in which <span class="accent">Alexander Chiesa’s</span>
-          transition from Italy to Russia is articulated
-          through a polylingual body of voice samples.
-        </p>
+        <!-- EN -->
+        <div class="text" id="en">
+          <p class="lead">
+            <span class="locked-ground">Locked Ground</span> is an acoustic-semiotic construct
+            in which <span class="accent">Alexander Chiesa’s</span>
+            transition from Italy to Russia is articulated
+            through a polylingual body of voice samples.
+          </p>
 
-        <p>
-          Latin and Russian fragments, including decontextualized
-          Catholic hymns, form a sacred-industrial sound field where
-          the artist’s name (Chiesa — “church”) becomes a <span class="italic">medium</span>
-          between memory and speculative futurity.
-        </p>
+          <p>
+            Latin and Russian fragments, including decontextualized
+            Catholic hymns, form a sacred-industrial sound field where
+            the artist’s name (Chiesa — “church”) becomes a <span class="italic">medium</span>
+            between memory and speculative futurity.
+          </p>
 
-        <p class="split">
-          Six tracks form a binary cycle:<br>
-          <span>three focus on the voice as an autonomous sonic object</span><br>
-          <span>three explore its interaction with rhythm</span>
-        </p>
+          <p class="split">
+            Six tracks form a binary cycle:<br>
+            <span>three focus on the voice as an autonomous sonic object</span><br>
+            <span>three explore its interaction with rhythm</span>
+          </p>
 
-        <p>
-          Alternation creates a pulsating perceptual structure —
-          music reduced to <span class="accent">ritual machinery</span>.
-        </p>
+          <p>
+            Alternation creates a pulsating perceptual structure —
+            music reduced to <span class="accent">ritual machinery</span>.
+          </p>
 
-        <p>
-          The title <span class="locked-ground">Locked Ground</span> functions as both fixed identity
-          and potential sonic territory awaiting excavation.
-        </p>
+          <p>
+            The title <span class="locked-ground">Locked Ground</span> functions as both fixed identity
+            and potential sonic territory awaiting excavation.
+          </p>
 
-        <p>
-          <i>Copycat Department</i> and the disappearing cat point to
-          simulation, loss of origin, and endless reproduction.
-        </p>
+          <p>
+            <i>Copycat Department</i> and the disappearing cat point to
+            simulation, loss of origin, and endless reproduction.
+          </p>
 
-        <p class="small">
-          Created over six months using 12-bit samplers,
-          lo-fi discretization and digital erosion reconstruct
-          an industrial imaginary between dancefloor and archive.
-        </p>
+          <p class="small">
+            Created over six months using 12-bit samplers,
+            lo-fi discretization and digital erosion reconstruct
+            an industrial imaginary between dancefloor and archive.
+          </p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ПРАВАЯ КОЛОНКА (только для десктопа) -->
-  <div class="right">
-    <img src="image.jpg" class="cover" alt="Locked Ground cover">
+  <!-- ПРАВАЯ КОЛОНКА (десктоп) с увеличенной картинкой по умолчанию -->
+  <div class="right" id="desktopRight">
+    <div class="desktop-image-container">
+      <img src="image.jpg" class="cover" alt="Locked Ground cover" id="desktopCover">
+    </div>
     <div class="links">
       <a href="#">▶ Bandcamp</a>
       <a href="#">▶ Spotify</a>
@@ -586,38 +725,58 @@ body::before {
 
 </div>
 
+<!-- нижний левый угол -->
+<div class="bottom-left">STADTKULT RECORDS</div>
+
 <script>
 let currentLang = "ru";
-let isExpanded = false;
+let isMobileExpanded = false;
+let isDesktopExpanded = false;
+let isAnimating = false;
 
-function toggleLang(){
+function toggleLang() {
+  if (isAnimating) return;
+  
+  isAnimating = true;
+  
   const ru = document.getElementById("ru");
   const en = document.getElementById("en");
-  ru.classList.toggle("active");
-  en.classList.toggle("active");
-  currentLang = ru.classList.contains("active") ? "ru" : "en";
+  const currentActive = currentLang === "ru" ? ru : en;
+  const nextActive = currentLang === "ru" ? en : ru;
+  
+  currentActive.style.opacity = "0";
+  currentActive.style.visibility = "hidden";
+  
+  setTimeout(() => {
+    ru.classList.toggle("active");
+    en.classList.toggle("active");
+    
+    nextActive.style.opacity = "1";
+    nextActive.style.visibility = "visible";
+    
+    currentLang = currentLang === "ru" ? "en" : "ru";
+    
+    setTimeout(() => {
+      isAnimating = false;
+    }, 100);
+  }, 200);
 }
 
-// Функция для раздвигания/сдвигания картинки на мобильных
-function toggleImageExpand(event) {
-  // Останавливаем всплытие
+// Функция для раздвигания картинки на мобильных
+function toggleMobileImageExpand(event) {
   if (event) event.stopPropagation();
-  
-  // Только на мобильных
   if (window.innerWidth > 900) return;
   
   const mobileAssets = document.getElementById("mobileAssets");
   if (!mobileAssets) return;
   
-  // Переключаем состояние
-  if (isExpanded) {
+  if (isMobileExpanded) {
     mobileAssets.classList.remove("expanded");
-    isExpanded = false;
+    isMobileExpanded = false;
   } else {
     mobileAssets.classList.add("expanded");
-    isExpanded = true;
+    isMobileExpanded = true;
     
-    // Опционально: плавно прокручиваем к картинке, если она вышла за пределы экрана
     setTimeout(() => {
       const coverElement = document.getElementById("mobileCover");
       if (coverElement) {
@@ -630,55 +789,91 @@ function toggleImageExpand(event) {
   }
 }
 
+// Функция для увеличения картинки на десктопе
+function toggleDesktopImageExpand(event) {
+  if (event) event.stopPropagation();
+  if (window.innerWidth <= 900) return;
+  
+  const desktopRight = document.getElementById("desktopRight");
+  if (!desktopRight) return;
+  
+  if (isDesktopExpanded) {
+    desktopRight.classList.remove("expanded");
+    isDesktopExpanded = false;
+  } else {
+    desktopRight.classList.add("expanded");
+    isDesktopExpanded = true;
+  }
+}
+
 window.onload = () => {
+  // Устанавливаем начальные стили для плавного фейда
+  const ru = document.getElementById("ru");
+  const en = document.getElementById("en");
+  
+  ru.style.opacity = "1";
+  ru.style.visibility = "visible";
+  en.style.opacity = "0";
+  en.style.visibility = "hidden";
+  
   if(navigator.language && navigator.language.startsWith("en")){
     toggleLang();
   }
   
-  // Добавляем обработчик клика на картинку в мобильной версии
+  // Добавляем обработчики для мобильной картинки
   const mobileCover = document.getElementById("mobileCover");
   const mobileImageContainer = document.getElementById("mobileImageContainer");
   
   if (mobileCover) {
-    mobileCover.addEventListener("click", toggleImageExpand);
+    mobileCover.addEventListener("click", toggleMobileImageExpand);
     mobileCover.style.cursor = "pointer";
   }
   if (mobileImageContainer) {
-    mobileImageContainer.addEventListener("click", toggleImageExpand);
+    mobileImageContainer.addEventListener("click", toggleMobileImageExpand);
   }
   
-  // Добавляем небольшой z-index для картинки в раздвинутом состоянии
-  const style = document.createElement('style');
-  style.textContent = `
-    .mobile-assets.expanded .cover-mobile {
-      position: relative;
-      z-index: 5;
-    }
-  `;
-  document.head.appendChild(style);
+  // Добавляем обработчики для десктопной картинки
+  const desktopCover = document.getElementById("desktopCover");
+  const desktopContainer = document.querySelector(".desktop-image-container");
+  
+  if (desktopCover) {
+    desktopCover.addEventListener("click", toggleDesktopImageExpand);
+    desktopCover.style.cursor = "pointer";
+  }
+  if (desktopContainer) {
+    desktopContainer.addEventListener("click", toggleDesktopImageExpand);
+  }
 }
 
-// параллакс только на десктопе
+// параллакс на десктопе (только для не увеличенного состояния, чтобы не конфликтовать)
 const cover = document.querySelector(".cover");
 if(cover) {
   document.addEventListener("mousemove", (e) => {
-    if(window.innerWidth > 900 && cover){
+    if(window.innerWidth > 900 && cover && !isDesktopExpanded){
       const x = (e.clientX / window.innerWidth - 0.5) * 6;
       const y = (e.clientY / window.innerHeight - 0.5) * 6;
       cover.style.transform = `translate(${x}px, ${y}px)`;
-    } else if(cover) {
+    } else if(cover && !isDesktopExpanded) {
       cover.style.transform = "none";
     }
   });
 }
 
-// При изменении размера окна сбрасываем состояние, если стало десктопом
+// Сброс состояния при изменении размера окна
 window.addEventListener("resize", () => {
-  if (window.innerWidth > 900 && isExpanded) {
+  if (window.innerWidth > 900 && isMobileExpanded) {
     const mobileAssets = document.getElementById("mobileAssets");
     if (mobileAssets) {
       mobileAssets.classList.remove("expanded");
-      isExpanded = false;
+      isMobileExpanded = false;
+    }
+  }
+  
+  if (window.innerWidth <= 900 && isDesktopExpanded) {
+    const desktopRight = document.getElementById("desktopRight");
+    if (desktopRight) {
+      desktopRight.classList.remove("expanded");
+      isDesktopExpanded = false;
     }
   }
 });
