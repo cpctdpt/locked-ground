@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<title>Copycat Department — Locked Ground</title>
+<!-- Satoshi шрифт -->
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: 'Satoshi', sans-serif;
+  min-height: 100vh;
+  line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
+  font-weight: 400;
+}
+
+/* эррозивный черный фон с текстурой, шумом и горизонтальными линиями */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      rgba(20, 20, 20, 0.3) 0px,
+      rgba(20, 20, 20, 0.3) 2px,
+      transparent 2px,
+      transparent 6px
+    ),
+    url('https://www.transparenttextures.com/patterns/asfalt-dark.png'),
+    radial-gradient(circle at 30% 40%, rgba(30, 30, 30, 0.5) 0%, rgba(0, 0, 0, 0.95) 100%);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* дополнительный слой шума для эрозии */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="1" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/%3E%3C/svg%3E');
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* переключатель языка */
+.lang-switch {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  cursor: pointer;
+  opacity: 0.6;
+  letter-spacing: 2px;
+  z-index: 20;
+  font-size: 13px;
+  font-weight: 400;
+  background: rgba(0,0,0,0.5);
+  padding: 6px 14px;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+  transition: opacity 0.2s, transform 0.2s;
+  font-family: 'Satoshi', monospace;
+}
+
+.lang-switch:hover {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* контейнер */
+.container {
+  display: flex;
+  flex-direction: row;
+  padding: 60px;
+  gap: 80px;
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* LEFT */
+.left {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* заголовок с дополнительным текстом */
+.title-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.left h1 {
+  font-size: 72px;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin: 0;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.subtitle-small {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  margin-top: 8px;
+  margin-left: 4px;
+  font-family: 'Satoshi', monospace;
+  text-transform: uppercase;
+}
+
+/* текст */
+.text-wrapper {
+  position: relative;
+  flex: 1;
+  transition: margin-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* контейнер для текста */
+.text-container {
+  position: relative;
+  width: 100%;
+}
+
+.text {
+  width: 100%;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease;
+}
+
+/* анимация для отдельных строк */
+.text p {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideInUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* анимация для падения при смене языка */
+.text-exit p {
+  animation: slideOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+@keyframes slideOutDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+.text-enter p {
+  animation: slideInUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards !important;
+}
+
+/* задержки для каждой строки */
+.text p:nth-child(1) { animation-delay: 0s; }
+.text p:nth-child(2) { animation-delay: 0.05s; }
+.text p:nth-child(3) { animation-delay: 0.1s; }
+.text p:nth-child(4) { animation-delay: 0.15s; }
+.text p:nth-child(5) { animation-delay: 0.2s; }
+.text p:nth-child(6) { animation-delay: 0.25s; }
+.text p:nth-child(7) { animation-delay: 0.3s; }
+.text p:nth-child(8) { animation-delay: 0.35s; }
+
+.left p {
+  font-size: 17px;
+  color: #ccc;
+  margin-bottom: 18px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+/* выделение Locked Ground */
+.locked-ground {
+  font-weight: 800;
+  font-size: 1.25em;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 8px rgba(255,255,255,0.3);
+  display: inline-block;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.lead { 
+  font-size: 20px; 
+  color: #fff; 
+  font-weight: 500;
+  line-height: 1.5;
+}
+.accent { 
+  color: #fff; 
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.italic { font-style: italic; }
+
+/* жирные точки перед словами */
+.bullet-point {
+  font-weight: 800;
+  font-size: 1.2em;
+  display: inline-block;
+  margin-right: 6px;
+  color: #fff;
+}
+
+.split {
+  margin-bottom: 18px;
+}
+
+.split span {
+  display: block;
+  margin-left: 20px;
+  opacity: 0.85;
+  font-size: 0.95em;
+}
+
+.split .bullet-line {
+  display: block;
+  margin-left: 20px;
+  margin-bottom: 4px;
+}
+
+.small { 
+  font-size: 13px; 
+  opacity: 0.55;
+  margin-top: 12px;
+  letter-spacing: 0.2px;
+  font-weight: 400;
+}
+
+/* RIGHT (десктопная версия) */
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: sticky;
+  top: 40px;
+}
+
+/* контейнер для картинки на десктопе с анимацией */
+.desktop-image-container {
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.cover {
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 24px;
+  transition: all 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 25px 40px -15px rgba(0,0,0,0.6);
+  cursor: pointer;
+}
+
+/* Увеличенное состояние картинки на десктопе */
+.right.expanded .cover {
+  max-width: 95%;
+  transform: scale(1.05);
+  box-shadow: 0 45px 65px -20px rgba(0,0,0,0.9);
+  border-radius: 8px;
+}
+
+.right.expanded .desktop-image-container {
+  margin-bottom: 20px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.4s ease;
+}
+
+.right.expanded .links {
+  margin-top: 15px;
+}
+
+.links a {
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 0;
+  opacity: 0.65;
+  transition: opacity 0.2s, transform 0.2s;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  font-family: 'Satoshi', sans-serif;
+}
+
+.links a:hover { 
+  opacity: 1; 
+  transform: translateX(6px);
+}
+.ig { 
+  margin-top: 12px;
+  opacity: 0.8;
+}
+
+/* нижний левый угол */
+.bottom-left {
+  position: fixed;
+  bottom: 20px;
+  left: 24px;
+  z-index: 10;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.35);
+  font-family: 'Satoshi', monospace;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+/* ----- МОБИЛЬНАЯ ВЕРСИЯ ----- */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    padding: 20px 18px 32px 18px;
+    gap: 0;
+    min-height: auto;
+    padding-bottom: 60px;
+  }
+  
+  .title-wrapper {
+    margin-bottom: 16px;
+  }
+  
+  .left h1 {
+    font-size: 38px;
+    line-height: 1.1;
+    font-weight: 700;
+  }
+  
+  .subtitle-small {
+    font-size: 8px;
+    margin-top: 6px;
+    letter-spacing: 0.8px;
+  }
+  
+  /* Скрываем оригинальный правый блок на мобильных */
+  .right {
+    display: none;
+  }
+  
+  /* Мобильные элементы */
+  .mobile-assets {
+    display: block;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+  }
+  
+  /* Контейнер для картинки */
+  .mobile-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin-bottom: 0;
+    width: 100%;
+  }
+  
+  /* Картинка в мобильной версии */
+  .cover-mobile {
+    width: 70%;
+    max-width: 280px;
+    min-width: 180px;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 18px 32px -12px rgba(0,0,0,0.7);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+    object-fit: cover;
+  }
+  
+  /* РАЗДВИНУТОЕ СОСТОЯНИЕ на мобильных */
+  .mobile-assets.expanded .mobile-image-container {
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .mobile-assets.expanded .cover-mobile {
+    width: 92%;
+    max-width: 500px;
+    min-width: auto;
+    box-shadow: 0 30px 50px -18px rgba(0,0,0,0.9);
+    transform: scale(1.02);
+  }
+  
+  /* Контейнер для ссылок */
+  .links-mobile-wrapper {
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: visible;
+  }
+  
+  /* Горизонтальные ссылки-кнопки */
+  .links-mobile {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 14px 0 0 0;
+    transition: all 0.3s ease;
+  }
+  
+  .links-mobile a {
+    font-size: 11px;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.06);
+    border: 0.5px solid rgba(255,255,255,0.15);
+    border-radius: 30px;
+    text-decoration: none;
+    color: #eee;
+    opacity: 0.85;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+    font-weight: 400;
+    backdrop-filter: blur(2px);
+    font-family: 'Satoshi', sans-serif;
+  }
+  
+  .links-mobile a:active {
+    opacity: 1;
+    background: rgba(255,255,255,0.12);
+    transform: scale(0.96);
+  }
+  
+  .ig-mobile {
+    background: rgba(255,255,255,0.08) !important;
+    padding: 6px 14px !important;
+  }
+  
+  /* ТЕКСТ — вплотную к ссылкам */
+  .text-wrapper {
+    margin-top: 12px;
+    min-height: auto;
+    transition: margin-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  /* При раздвинутой картинке текст отодвигается чуть больше */
+  .mobile-assets.expanded ~ .text-wrapper,
+  .mobile-assets.expanded + .text-wrapper {
+    margin-top: 22px;
+  }
+  
+  .text-container {
+    min-height: auto;
+  }
+  
+  .text {
+    width: 100%;
+  }
+  
+  .left p {
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 12px;
+    font-weight: 400;
+  }
+  
+  .lead {
+    font-size: 16px;
+    line-height: 1.45;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  
+  .locked-ground {
+    font-size: 1.3em;
+    font-weight: 800;
+    display: inline-block;
+    margin: 0 2px;
+  }
+  
+  .split span {
+    margin-left: 12px;
+    font-size: 13px;
+  }
+  
+  .bullet-point {
+    font-size: 1.1em;
+    margin-right: 4px;
+  }
+  
+  .small {
+    font-size: 11px;
+    margin-top: 10px;
+    opacity: 0.6;
+  }
+  
+  .left {
+    gap: 0;
+  }
+  
+  .accent {
+    border-bottom: none;
+    font-weight: 600;
+  }
+  
+  .bottom-left {
+    bottom: 12px;
+    left: 16px;
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+  
+  /* задержки для мобильной версии */
+  .text p:nth-child(1) { animation-delay: 0s; }
+  .text p:nth-child(2) { animation-delay: 0.05s; }
+  .text p:nth-child(3) { animation-delay: 0.1s; }
+  .text p:nth-child(4) { animation-delay: 0.15s; }
+  .text p:nth-child(5) { animation-delay: 0.2s; }
+  .text p:nth-child(6) { animation-delay: 0.25s; }
+  .text p:nth-child(7) { animation-delay: 0.3s; }
+  .text p:nth-child(8) { animation-delay: 0.35s; }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .container {
+    padding: 16px 16px 24px 16px;
+  }
+  
+  .left h1 {
+    font-size: 32px;
+  }
+  
+  .subtitle-small {
+    font-size: 7px;
+    margin-top: 5px;
+  }
+  
+  .cover-mobile {
+    width: 75%;
+    max-width: 240px;
+    min-width: 150px;
+  }
+  
+  .mobile-assets.expanded .cover-mobile {
+    width: 94%;
+    max-width: 340px;
+  }
+  
+  .links-mobile {
+    gap: 6px;
+    margin-top: 10px;
+  }
+  
+  .links-mobile a {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+  
+  .left p {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  
+  .lead {
+    font-size: 15px;
+  }
+  
+  .locked-ground {
+    font-size: 1.25em;
+  }
+  
+  .split span {
+    font-size: 12px;
+    margin-left: 10px;
+  }
+  
+  .small {
+    font-size: 10px;
+  }
+  
+  .text-wrapper {
+    margin-top: 10px;
+  }
+  
+  .mobile-assets.expanded ~ .text-wrapper,
+  .mobile-assets.expanded + .text-wrapper {
+    margin-top: 18px;
+  }
+}
+
+/* Десктопная версия: дополнительные стили */
+@media (min-width: 901px) {
+  .mobile-assets {
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="lang-switch" onclick="toggleLang()">EN</div>
+
+<div class="container">
+
+  <!-- ЛЕВАЯ КОЛОНКА -->
+  <div class="left">
+    <div class="title-wrapper">
+      <h1>Copycat<br>Department</h1>
+      <div class="subtitle-small">Locked Ground (2026)</div>
+    </div>
+    
+    <!-- Мобильная вставка с анимацией -->
+    <div class="mobile-assets" id="mobileAssets">
+      <div class="mobile-image-container" id="mobileImageContainer">
+        <img src="image.jpg" alt="Locked Ground cover" class="cover-mobile" id="mobileCover">
+      </div>
+      <div class="links-mobile-wrapper">
+        <div class="links-mobile">
+          <a href="#">▶ Bandcamp</a>
+          <a href="#">▶ Spotify</a>
+          <a href="#">▶ Apple Music</a>
+          <a href="#">▶ Soundcloud</a>
+          <a href="#">▶ Beatport</a>
+          <a href="#" class="ig-mobile">📷 Instagram</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-wrapper" id="textWrapper">
+      <div class="text-container" id="textContainer">
+        <!-- RU -->
+        <div class="text" id="ru">
+          <p class="lead">
+            <span class="locked-ground">Locked Ground</span> — это акустико-семиотическая конструкция,
+            в которой биографический транзит <span class="accent">Александра Кьеза</span>
+            из Италии в Россию артикулируется через полилингвальный корпус семплов,
+            функционирующих как фоно-археологические артефакты памяти.
+          </p>
+
+          <p>
+            Латинские и русские фрагменты, включая деконтекстуализированные
+            католические гимны, формируют сакрально-индустриальное звуковое поле,
+            где фамилия автора (Кьеза — «церковь») становится метонимией медиума
+            между прошлым и спекулятивным будущим.
+          </p>
+
+          <p class="split">
+            Шесть треков образуют нумерологическую матрицу цикла:<br>
+          - три из них акцентируют голос как автономный объект<br>
+           - три — его диалектику с ритмом<br>
+          </p>
+
+          <p>
+            Композиции чередуются, формируя пульсирующую структуру восприятия.
+            Музыка редуцируется до <span class="accent">ритуальной машинерии</span>.
+          </p>
+
+          <p>
+            Название <span class="locked-ground">Locked Ground</span> — метафора фиксированной идентичности
+            и потенциальной территории звука.
+          </p>
+
+          <p>
+            <i>Copycat Department</i> и исчезающая кошка указывают на процесс
+            симуляции, утраты оригинала и бесконечного воспроизводства смысла.
+          </p>
+
+          <p class="small">
+            Процесс создания: 12-битная дискретизация, лоу-фай-текстуры
+            и цифровая эрозия как метод критической реконструкции
+            индустриального воображаемого.
+          </p>
+        </div>
+
+        <!-- EN -->
+        <div class="text" id="en" style="display: none;">
+          <p class="lead">
+            <span class="locked-ground">Locked Ground</span> is an acoustic-semiotic construct
+            in which <span class="accent">Alexander Chiesa’s</span>
+            transition from Italy to Russia is articulated
+            through a polylingual body of voice samples.
+          </p>
+
+          <p>
+            Latin and Russian fragments, including decontextualized
+            Catholic hymns, form a sacred-industrial sound field where
+            the artist’s name (Chiesa — “church”) becomes a <span class="italic">medium</span>
+            between memory and speculative futurity.
+          </p>
+
+          <p class="split">
+            Six tracks form a binary cycle:<br>
+            <span class="bullet-line"><span class="bullet-point">●</span> three focus on the voice as an autonomous sonic object</span>
+            <span class="bullet-line"><span class="bullet-point">●</span> three explore its interaction with rhythm</span>
+          </p>
+
+          <p>
+            Alternation creates a pulsating perceptual structure —
+            music reduced to <span class="accent">ritual machinery</span>.
+          </p>
+
+          <p>
+            The title <span class="locked-ground">Locked Ground</span> functions as both fixed identity
+            and potential sonic territory awaiting excavation.
+          </p>
+
+          <p>
+            <i>Copycat Department</i> and the disappearing cat point to
+            simulation, loss of origin, and endless reproduction.
+          </p>
+
+          <p class="small">
+            Created over six months using 12-bit samplers,
+            lo-fi discretization and digital erosion reconstruct
+            an industrial imaginary between dancefloor and archive.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРАВАЯ КОЛОНКА (десктоп) -->
+  <div class="right" id="desktopRight">
+    <div class="desktop-image-container">
+      <img src="image.jpg" class="cover" alt="Locked Ground cover" id="desktopCover">
+    </div>
+    <div class="links">
+      <a href="#">▶ Bandcamp</a>
+      <a href="#">▶ Spotify</a>
+      <a href="#">▶ Apple Music</a>
+      <a href="#">▶ Soundcloud</a>
+      <a href="#">▶ Beatport</a>
+      <a href="#" class="ig">📷 Instagram</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- нижний левый угол -->
+<div class="bottom-left">STADTKULT RECORDS</div>
+
+<script>
+let currentLang = "ru";
+let isMobileExpanded = false;
+let isDesktopExpanded = false;
+let isAnimating = false;
+
+function toggleLang() {
+  if (isAnimating) return;
+  isAnimating = true;
+  
+  const ru = document.getElementById("ru");
+  const en = document.getElementById("en");
+  const currentText = currentLang === "ru" ? ru : en;
+  const nextText = currentLang === "ru" ? en : ru;
+  const nextLang = currentLang === "ru" ? "en" : "ru";
+  
+  // Добавляем класс анимации вылета для всех строк текущего текста
+  const currentParagraphs = currentText.querySelectorAll('p');
+  currentParagraphs.forEach(p => {
+    p.classList.add('text-exit');
+  });
+  
+  // Ждем окончания анимации вылета
+  setTimeout(() => {
+    // Скрываем текущий текст
+    currentText.style.display = "none";
+    
+    // Показываем новый текст
+    nextText.style.display = "block";
+    
+    // Убираем класс вылета у текущего текста
+    currentParagraphs.forEach(p => {
+      p.classList.remove('text-exit');
+    });
+    
+    // Добавляем класс влета для строк нового текста
+    const nextParagraphs = nextText.querySelectorAll('p');
+    nextParagraphs.forEach((p, index) => {
+      p.classList.add('text-enter');
+      // Убираем класс после анимации
+      setTimeout(() => {
+        p.classList.remove('text-enter');
+      }, 600);
+    });
+    
+    currentLang = nextLang;
+    
+    setTimeout(() => {
+      isAnimating = false;
+    }, 200);
+  }, 400);
+}
+
+// Функция для раздвигания картинки на мобильных
+function toggleMobileImageExpand(event) {
+  if (event) event.stopPropagation();
+  if (window.innerWidth > 900) return;
+  
+  const mobileAssets = document.getElementById("mobileAssets");
+  if (!mobileAssets) return;
+  
+  if (isMobileExpanded) {
+    mobileAssets.classList.remove("expanded");
+    isMobileExpanded = false;
+  } else {
+    mobileAssets.classList.add("expanded");
+    isMobileExpanded = true;
+    
+    setTimeout(() => {
+      const coverElement = document.getElementById("mobileCover");
+      if (coverElement) {
+        const rect = coverElement.getBoundingClientRect();
+        if (rect.top < 0) {
+          coverElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }, 100);
+  }
+}
+
+// Функция для увеличения картинки на десктопе
+function toggleDesktopImageExpand(event) {
+  if (event) event.stopPropagation();
+  if (window.innerWidth <= 900) return;
+  
+  const desktopRight = document.getElementById("desktopRight");
+  if (!desktopRight) return;
+  
+  if (isDesktopExpanded) {
+    desktopRight.classList.remove("expanded");
+    isDesktopExpanded = false;
+  } else {
+    desktopRight.classList.add("expanded");
+    isDesktopExpanded = true;
+  }
+}
+
+window.onload = () => {
+  // Устанавливаем начальные анимации для строк
+  const ru = document.getElementById("ru");
+  const ruParagraphs = ru.querySelectorAll('p');
+  ruParagraphs.forEach((p, index) => {
+    p.style.animationDelay = `${index * 0.05}s`;
+    p.classList.add('text-enter');
+    setTimeout(() => {
+      p.classList.remove('text-enter');
+    }, 600);
+  });
+  
+  ru.style.display = "block";
+  
+  if(navigator.language && navigator.language.startsWith("en")){
+    toggleLang();
+  }
+  
+  // Добавляем обработчики для мобильной картинки
+  const mobileCover = document.getElementById("mobileCover");
+  const mobileImageContainer = document.getElementById("mobileImageContainer");
+  
+  if (mobileCover) {
+    mobileCover.addEventListener("click", toggleMobileImageExpand);
+    mobileCover.style.cursor = "pointer";
+  }
+  if (mobileImageContainer) {
+    mobileImageContainer.addEventListener("click", toggleMobileImageExpand);
+  }
+  
+  // Добавляем обработчики для десктопной картинки
+  const desktopCover = document.getElementById("desktopCover");
+  const desktopContainer = document.querySelector(".desktop-image-container");
+  
+  if (desktopCover) {
+    desktopCover.addEventListener("click", toggleDesktopImageExpand);
+    desktopCover.style.cursor = "pointer";
+  }
+  if (desktopContainer) {
+    desktopContainer.addEventListener("click", toggleDesktopImageExpand);
+  }
+}
+
+// параллакс на десктопе
+const cover = document.querySelector(".cover");
+if(cover) {
+  document.addEventListener("mousemove", (e) => {
+    if(window.innerWidth > 900 && cover && !isDesktopExpanded){
+      const x = (e.clientX / window.innerWidth - 0.5) * 6;
+      const y = (e.clientY / window.innerHeight - 0.5) * 6;
+      cover.style.transform = `translate(${x}px, ${y}px)`;
+    } else if(cover && !isDesktopExpanded) {
+      cover.style.transform = "none";
+    }
+  });
+}
+
+// Сброс состояния при изменении размера окна
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 900 && isMobileExpanded) {
+    const mobileAssets = document.getElementById("mobileAssets");
+    if (mobileAssets) {
+      mobileAssets.classList.remove("expanded");
+      isMobileExpanded = false;
+    }
+  }
+  
+  if (window.innerWidth <= 900 && isDesktopExpanded) {
+    const desktopRight = document.getElementById("desktopRight");
+    if (desktopRight) {
+      desktopRight.classList.remove("expanded");
+      isDesktopExpanded = false;
+    }
+  }
+});
+</script>
+
+</body>
+</html>
