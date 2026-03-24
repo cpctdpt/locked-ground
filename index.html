@@ -24,7 +24,7 @@ body {
   font-weight: 400;
 }
 
-/* эррозивный черный фон с текстурой, шумом и горизонтальными линиями */
+/* эррозивный черный фон с усиленной текстурой, шумом и горизонтальными линиями */
 body::before {
   content: "";
   position: fixed;
@@ -34,6 +34,13 @@ body::before {
   background-image: 
     repeating-linear-gradient(
       0deg,
+      rgba(255, 255, 255, 0.06) 0px,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
       rgba(255, 255, 255, 0.03) 0px,
       rgba(255, 255, 255, 0.03) 1px,
       transparent 1px,
@@ -41,19 +48,19 @@ body::before {
     ),
     repeating-linear-gradient(
       45deg,
-      rgba(20, 20, 20, 0.3) 0px,
-      rgba(20, 20, 20, 0.3) 2px,
+      rgba(30, 30, 30, 0.4) 0px,
+      rgba(30, 30, 30, 0.4) 2px,
       transparent 2px,
-      transparent 6px
+      transparent 8px
     ),
     url('https://www.transparenttextures.com/patterns/asfalt-dark.png'),
-    radial-gradient(circle at 30% 40%, rgba(30, 30, 30, 0.5) 0%, rgba(0, 0, 0, 0.95) 100%);
-  opacity: 0.4;
+    radial-gradient(circle at 30% 40%, rgba(40, 40, 40, 0.6) 0%, rgba(0, 0, 0, 0.98) 100%);
+  opacity: 0.55;
   pointer-events: none;
   z-index: 0;
 }
 
-/* дополнительный слой шума для эрозии */
+/* усиленный слой шума для эрозии */
 body::after {
   content: "";
   position: fixed;
@@ -61,8 +68,26 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="1" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/%3E%3C/svg%3E');
-  opacity: 0.2;
+  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%" height="100%" filter="url(%23noise)" opacity="0.12"/%3E%3C/svg%3E');
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* дополнительный слой зернистости */
+body {
+  position: relative;
+}
+
+body .grain-overlay {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-radial-gradient(circle at 20% 30%, rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 1px, transparent 1px, transparent 3px);
+  opacity: 0.25;
   pointer-events: none;
   z-index: 0;
 }
@@ -117,7 +142,7 @@ body::after {
 /* заголовок с дополнительным текстом */
 .title-wrapper {
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .left h1 {
@@ -134,7 +159,7 @@ body::after {
   letter-spacing: 1.2px;
   font-weight: 400;
   color: rgba(255,255,255,0.45);
-  margin-top: 8px;
+  margin-top: 10px;
   margin-left: 4px;
   font-family: 'Satoshi', monospace;
   text-transform: uppercase;
@@ -243,30 +268,25 @@ body::after {
 }
 .italic { font-style: italic; }
 
-/* жирные точки перед словами */
+/* маленькие параграфные точки */
 .bullet-point {
-  font-weight: 800;
-  font-size: 1.2em;
+  font-weight: 700;
+  font-size: 1em;
   display: inline-block;
-  margin-right: 6px;
+  margin-right: 8px;
   color: #fff;
+  opacity: 0.8;
 }
 
 .split {
   margin-bottom: 18px;
 }
 
-.split span {
-  display: block;
-  margin-left: 20px;
-  opacity: 0.85;
-  font-size: 0.95em;
-}
-
 .split .bullet-line {
   display: block;
-  margin-left: 20px;
-  margin-bottom: 4px;
+  margin-left: 0;
+  margin-bottom: 6px;
+  line-height: 1.5;
 }
 
 .small { 
@@ -300,23 +320,23 @@ body::after {
   width: 100%;
   max-width: 420px;
   margin-bottom: 24px;
-  transition: all 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+  transition: all 0.7s cubic-bezier(0.2, 0.95, 0.4, 1.1);
   display: block;
   border-radius: 6px;
   box-shadow: 0 25px 40px -15px rgba(0,0,0,0.6);
   cursor: pointer;
 }
 
-/* Увеличенное состояние картинки на десктопе */
+/* Увеличенное состояние картинки на десктопе — значительно больше */
 .right.expanded .cover {
-  max-width: 95%;
-  transform: scale(1.05);
-  box-shadow: 0 45px 65px -20px rgba(0,0,0,0.9);
-  border-radius: 8px;
+  max-width: 110%;
+  transform: scale(1.08);
+  box-shadow: 0 55px 75px -22px rgba(0,0,0,0.95);
+  border-radius: 10px;
 }
 
 .right.expanded .desktop-image-container {
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .links {
@@ -327,7 +347,7 @@ body::after {
 }
 
 .right.expanded .links {
-  margin-top: 15px;
+  margin-top: 18px;
 }
 
 .links a {
@@ -379,7 +399,7 @@ body::after {
   }
   
   .title-wrapper {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
   
   .left h1 {
@@ -390,7 +410,7 @@ body::after {
   
   .subtitle-small {
     font-size: 8px;
-    margin-top: 6px;
+    margin-top: 8px;
     letter-spacing: 0.8px;
   }
   
@@ -489,14 +509,13 @@ body::after {
     padding: 6px 14px !important;
   }
   
-  /* ТЕКСТ — вплотную к ссылкам */
+  /* ТЕКСТ */
   .text-wrapper {
     margin-top: 12px;
     min-height: auto;
     transition: margin-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   
-  /* При раздвинутой картинке текст отодвигается чуть больше */
   .mobile-assets.expanded ~ .text-wrapper,
   .mobile-assets.expanded + .text-wrapper {
     margin-top: 22px;
@@ -531,14 +550,14 @@ body::after {
     margin: 0 2px;
   }
   
-  .split span {
-    margin-left: 12px;
-    font-size: 13px;
+  .split .bullet-line {
+    margin-left: 0;
+    margin-bottom: 4px;
   }
   
   .bullet-point {
-    font-size: 1.1em;
-    margin-right: 4px;
+    font-size: 0.95em;
+    margin-right: 6px;
   }
   
   .small {
@@ -586,7 +605,7 @@ body::after {
   
   .subtitle-small {
     font-size: 7px;
-    margin-top: 5px;
+    margin-top: 7px;
   }
   
   .cover-mobile {
@@ -621,11 +640,6 @@ body::after {
   
   .locked-ground {
     font-size: 1.25em;
-  }
-  
-  .split span {
-    font-size: 12px;
-    margin-left: 10px;
   }
   
   .small {
@@ -700,8 +714,8 @@ body::after {
 
           <p class="split">
             Шесть треков образуют нумерологическую матрицу цикла:<br>
-          - три из них акцентируют голос как автономный объект<br>
-           - три — его диалектику с ритмом<br>
+            <span class="bullet-line"><span class="bullet-point">•</span> три из них акцентируют голос как автономный объект</span>
+            <span class="bullet-line"><span class="bullet-point">•</span> три — его диалектику с ритмом</span>
           </p>
 
           <p>
@@ -744,8 +758,8 @@ body::after {
 
           <p class="split">
             Six tracks form a binary cycle:<br>
-            <span class="bullet-line"><span class="bullet-point">●</span> three focus on the voice as an autonomous sonic object</span>
-            <span class="bullet-line"><span class="bullet-point">●</span> three explore its interaction with rhythm</span>
+            <span class="bullet-line"><span class="bullet-point">•</span> three focus on the voice as an autonomous sonic object</span>
+            <span class="bullet-line"><span class="bullet-point">•</span> three explore its interaction with rhythm</span>
           </p>
 
           <p>
