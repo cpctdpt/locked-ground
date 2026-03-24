@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copycat Department</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- переключение языка -->
+<div class="lang-switch" onclick="toggleLang()">EN</div>
+
+<div class="container">
+
+  <!-- ЛЕВО -->
+  <div class="left">
+    <h1>Copycat<br>Department</h1>
+
+    <div class="text-wrapper">
+
+      <!-- RU -->
+      <div class="text active" id="ru">
+        <p class="lead">
+          <i>Locked Ground</i> — это акустико-семиотическая конструкция,
+          в которой биографический транзит <span class="accent">Александра Кьеза</span>
+          из Италии в Россию артикулируется через полилингвальный корпус семплов,
+          функционирующих как фоно-археологические артефакты памяти.
+        </p>
+
+        <p>
+          Латинские и русские фрагменты, включая деконтекстуализированные
+          католические гимны, формируют сакрально-индустриальное звуковое поле,
+          где фамилия автора (Кьеза — «церковь») становится метонимией медиума
+          между прошлым и спекулятивным будущим.
+        </p>
+
+        <p class="split">
+          Шесть треков образуют нумерологическую матрицу цикла:<br>
+          <span>три из них акцентируют голос как автономный объект</span><br>
+          <span>три — его диалектику с ритмом</span>
+        </p>
+
+        <p>
+          Композиции чередуются, формируя пульсирующую структуру восприятия.
+          Музыка редуцируется до <span class="accent">ритуальной машинерии</span>.
+        </p>
+
+        <p>
+          Название <i>Locked Ground</i> — метафора фиксированной идентичности
+          и потенциальной территории звука.
+        </p>
+
+        <p>
+          <i>Copycat Department</i> и исчезающая кошка указывают на процесс
+          симуляции, утраты оригинала и бесконечного воспроизводства смысла.
+        </p>
+
+        <p class="small">
+          Процесс создания: 12-битная дискретизация, лоу-фай-текстуры
+          и цифровая эрозия как метод критической реконструкции
+          индустриального воображаемого.
+        </p>
+      </div>
+
+      <!-- EN -->
+      <div class="text" id="en">
+        <p class="lead">
+          <i>Locked Ground</i> is an acoustic-semiotic construct
+          in which <span class="accent">Alexander Chiesa’s</span>
+          transition from Italy to Russia is articulated
+          through a polylingual body of voice samples.
+        </p>
+
+        <p>
+          Latin and Russian fragments, including decontextualized
+          Catholic hymns, form a sacred-industrial sound field where
+          the artist’s name (Chiesa — “church”) becomes a <span class="italic">medium</span>
+          between memory and speculative futurity.
+        </p>
+
+        <p class="split">
+          Six tracks form a binary cycle:<br>
+          <span>three focus on the voice as an autonomous sonic object</span><br>
+          <span>three explore its interaction with rhythm</span>
+        </p>
+
+        <p>
+          Alternation creates a pulsating perceptual structure —
+          music reduced to <span class="accent">ritual machinery</span>.
+        </p>
+
+        <p>
+          The title <i>Locked Ground</i> functions as both fixed identity
+          and potential sonic territory awaiting excavation.
+        </p>
+
+        <p>
+          <i>Copycat Department</i> and the disappearing cat point to
+          simulation, loss of origin, and endless reproduction.
+        </p>
+
+        <p class="small">
+          Created over six months using 12-bit samplers,
+          lo-fi discretization and digital erosion reconstruct
+          an industrial imaginary between dancefloor and archive.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ПРАВО -->
+  <div class="right">
+    <img src="image.jpg" class="cover">
+    <div class="links">
+      <a href="#">▶ Bandcamp</a>
+      <a href="#">▶ Spotify</a>
+      <a href="#">▶ Apple Music</a>
+      <a href="#">▶ Soundcloud</a>
+      <a href="#">▶ Beatport</a>
+      <a href="#" class="ig">📷 Instagram</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let lang = "ru";
+
+function toggleLang(){
+  document.getElementById("ru").classList.toggle("active");
+  document.getElementById("en").classList.toggle("active");
+}
+
+window.onload = () => {
+  if(navigator.language.startsWith("en")){
+    toggleLang();
+  }
+}
+
+// параллакс отключаем на мобильных
+const cover = document.querySelector(".cover");
+document.addEventListener("mousemove", (e) => {
+  if(window.innerWidth > 900){
+    const x = (e.clientX / window.innerWidth - 0.5) * 8;
+    const y = (e.clientY / window.innerHeight - 0.5) * 8;
+    cover.style.transform = `translate(${x}px, ${y}px)`;
+  } else {
+    cover.style.transform = "none";
+  }
+});
+</script>
+
+</body>
+</html>

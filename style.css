@@ -1,0 +1,147 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  line-height: 1.7;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* фон с грейном */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    url('https://www.transparenttextures.com/patterns/asfalt-dark.png'),
+    linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8));
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* переключатель языка */
+.lang-switch {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  cursor: pointer;
+  opacity: 0.6;
+  letter-spacing: 2px;
+  z-index: 10;
+}
+
+.lang-switch:hover {
+  opacity: 1;
+}
+
+/* контейнер */
+.container {
+  display: flex;
+  flex-direction: row;
+  padding: 60px;
+  gap: 80px;
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* LEFT */
+.left {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.left h1 {
+  font-size: 72px;
+  line-height: 0.9;
+  margin-bottom: 20px;
+}
+
+/* текст */
+.text-wrapper {
+  position: relative;
+  flex: 1;
+  margin-top: 20px;
+}
+
+.text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.text.active {
+  opacity: 1;
+}
+
+.left p {
+  font-size: 17px;
+  color: #bbb;
+  margin-bottom: 18px;
+}
+
+.lead { font-size: 20px; color: #fff; }
+.accent { color: #fff; }
+.italic { font-style: italic; }
+.split span { display: block; margin-left: 20px; opacity: 0.8; }
+.small { font-size: 14px; opacity: 0.6; }
+
+/* RIGHT */
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cover {
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 20px;
+  transition: transform 0.2s ease;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+}
+
+.links a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  margin-bottom: 10px;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.links a:hover { opacity: 1; transform: translateX(5px); }
+.ig { margin-top: 20px; }
+
+/* адаптив */
+@media (max-width: 900px) {
+  .container { flex-direction: column; padding: 25px; }
+  .left h1 { font-size: 42px; margin-bottom: 15px; }
+
+  /* текст выше, картинка и ссылки ниже */
+  .text-wrapper { order: 1; position: relative; margin-bottom: 20px; }
+  .right { order: 2; width: 100%; align-items: center; margin-bottom: 30px; }
+  .cover { max-width: 70%; margin-bottom: 15px; transform: none !important; }
+  .links { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+  .links a { font-size: 14px; margin-bottom: 5px; }
+}
