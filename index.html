@@ -134,7 +134,7 @@ body::after {
   letter-spacing: 1.2px;
   font-weight: 400;
   color: rgba(255,255,255,0.45);
-  margin-top: 6px;
+  margin-top: 8px;
   margin-left: 4px;
   font-family: 'Satoshi', monospace;
   text-transform: uppercase;
@@ -146,33 +146,69 @@ body::after {
   flex: 1;
   margin-top: 20px;
   min-height: 420px;
-  transition: margin-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: margin-top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* контейнер для текста с плавным фейдом */
+/* контейнер для текста */
 .text-container {
   position: relative;
   width: 100%;
-  min-height: 400px;
 }
 
 .text {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
-  pointer-events: none;
-}
-
-.text.active {
   opacity: 1;
   visibility: visible;
-  position: relative;
-  pointer-events: auto;
+  transition: opacity 0.2s ease;
 }
+
+/* анимация для отдельных строк */
+.text p {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideInUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* анимация для падения при смене языка */
+.text-exit p {
+  animation: slideOutDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+@keyframes slideOutDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+.text-enter p {
+  animation: slideInUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards !important;
+}
+
+/* задержки для каждой строки */
+.text p:nth-child(1) { animation-delay: 0s; }
+.text p:nth-child(2) { animation-delay: 0.05s; }
+.text p:nth-child(3) { animation-delay: 0.1s; }
+.text p:nth-child(4) { animation-delay: 0.15s; }
+.text p:nth-child(5) { animation-delay: 0.2s; }
+.text p:nth-child(6) { animation-delay: 0.25s; }
+.text p:nth-child(7) { animation-delay: 0.3s; }
+.text p:nth-child(8) { animation-delay: 0.35s; }
 
 .left p {
   font-size: 17px;
@@ -208,12 +244,33 @@ body::after {
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 .italic { font-style: italic; }
-.split span { 
-  display: block; 
-  margin-left: 20px; 
+
+/* жирные точки перед словами */
+.bullet-point {
+  font-weight: 800;
+  font-size: 1.2em;
+  display: inline-block;
+  margin-right: 6px;
+  color: #fff;
+}
+
+.split {
+  margin-bottom: 18px;
+}
+
+.split span {
+  display: block;
+  margin-left: 20px;
   opacity: 0.85;
   font-size: 0.95em;
 }
+
+.split .bullet-line {
+  display: block;
+  margin-left: 20px;
+  margin-bottom: 4px;
+}
+
 .small { 
   font-size: 13px; 
   opacity: 0.55;
@@ -222,7 +279,7 @@ body::after {
   font-weight: 400;
 }
 
-/* RIGHT (десктопная версия) - увеличенная картинка по умолчанию */
+/* RIGHT (десктопная версия) */
 .right {
   flex: 1;
   display: flex;
@@ -245,22 +302,23 @@ body::after {
   width: 100%;
   max-width: 420px;
   margin-bottom: 24px;
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.2);
   display: block;
   border-radius: 6px;
   box-shadow: 0 25px 40px -15px rgba(0,0,0,0.6);
   cursor: pointer;
 }
 
-/* Увеличенное состояние картинки на десктопе */
+/* Увеличенное состояние картинки на десктопе — сильнее */
 .right.expanded .cover {
-  max-width: 85%;
-  transform: scale(1.02);
-  box-shadow: 0 35px 55px -18px rgba(0,0,0,0.8);
+  max-width: 95%;
+  transform: scale(1.05);
+  box-shadow: 0 45px 65px -20px rgba(0,0,0,0.9);
+  border-radius: 8px;
 }
 
 .right.expanded .desktop-image-container {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .links {
@@ -271,7 +329,7 @@ body::after {
 }
 
 .right.expanded .links {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .links a {
@@ -334,7 +392,7 @@ body::after {
   
   .subtitle-small {
     font-size: 8px;
-    margin-top: 4px;
+    margin-top: 6px;
     letter-spacing: 0.8px;
   }
   
@@ -362,7 +420,7 @@ body::after {
     width: 100%;
   }
   
-  /* Картинка в мобильной версии — увеличенная по умолчанию (70% ширины) */
+  /* Картинка в мобильной версии */
   .cover-mobile {
     width: 70%;
     max-width: 280px;
@@ -375,7 +433,7 @@ body::after {
     object-fit: cover;
   }
   
-  /* РАЗДВИНУТОЕ СОСТОЯНИЕ на мобильных — еще больше */
+  /* РАЗДВИНУТОЕ СОСТОЯНИЕ на мобильных */
   .mobile-assets.expanded .mobile-image-container {
     margin-bottom: 20px;
     width: 100%;
@@ -433,16 +491,16 @@ body::after {
     padding: 6px 14px !important;
   }
   
-  /* ТЕКСТ — будет сдвигаться вниз когда картинка раздвинута */
+  /* ТЕКСТ */
   .text-wrapper {
-    margin-top: 12px;
+    margin-top: 16px;
     min-height: auto;
     transition: margin-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   
   .mobile-assets.expanded ~ .text-wrapper,
   .mobile-assets.expanded + .text-wrapper {
-    margin-top: 35px;
+    margin-top: 28px;
   }
   
   .text-container {
@@ -450,16 +508,7 @@ body::after {
   }
   
   .text {
-    position: relative;
-    opacity: 0;
-    visibility: hidden;
-    display: block;
-  }
-  
-  .text.active {
-    opacity: 1;
-    visibility: visible;
-    position: relative;
+    width: 100%;
   }
   
   .left p {
@@ -488,6 +537,11 @@ body::after {
     font-size: 13px;
   }
   
+  .bullet-point {
+    font-size: 1.1em;
+    margin-right: 4px;
+  }
+  
   .small {
     font-size: 11px;
     margin-top: 10px;
@@ -509,6 +563,16 @@ body::after {
     font-size: 7px;
     letter-spacing: 1px;
   }
+  
+  /* задержки для мобильной версии */
+  .text p:nth-child(1) { animation-delay: 0s; }
+  .text p:nth-child(2) { animation-delay: 0.05s; }
+  .text p:nth-child(3) { animation-delay: 0.1s; }
+  .text p:nth-child(4) { animation-delay: 0.15s; }
+  .text p:nth-child(5) { animation-delay: 0.2s; }
+  .text p:nth-child(6) { animation-delay: 0.25s; }
+  .text p:nth-child(7) { animation-delay: 0.3s; }
+  .text p:nth-child(8) { animation-delay: 0.35s; }
 }
 
 /* Очень маленькие экраны */
@@ -523,6 +587,7 @@ body::after {
   
   .subtitle-small {
     font-size: 7px;
+    margin-top: 5px;
   }
   
   .cover-mobile {
@@ -568,12 +633,12 @@ body::after {
   }
   
   .text-wrapper {
-    margin-top: 8px;
+    margin-top: 12px;
   }
   
   .mobile-assets.expanded ~ .text-wrapper,
   .mobile-assets.expanded + .text-wrapper {
-    margin-top: 28px;
+    margin-top: 24px;
   }
 }
 
@@ -616,9 +681,9 @@ body::after {
     </div>
 
     <div class="text-wrapper" id="textWrapper">
-      <div class="text-container">
+      <div class="text-container" id="textContainer">
         <!-- RU -->
-        <div class="text active" id="ru">
+        <div class="text" id="ru">
           <p class="lead">
             <span class="locked-ground">Locked Ground</span> — это акустико-семиотическая конструкция,
             в которой биографический транзит <span class="accent">Александра Кьеза</span>
@@ -635,8 +700,8 @@ body::after {
 
           <p class="split">
             Шесть треков образуют нумерологическую матрицу цикла:<br>
-            <span>три из них акцентируют голос как автономный объект</span><br>
-            <span>три — его диалектику с ритмом</span>
+            <span class="bullet-line"><span class="bullet-point">●</span> три из них акцентируют голос как автономный объект</span>
+            <span class="bullet-line"><span class="bullet-point">●</span> три — его диалектику с ритмом</span>
           </p>
 
           <p>
@@ -662,7 +727,7 @@ body::after {
         </div>
 
         <!-- EN -->
-        <div class="text" id="en">
+        <div class="text" id="en" style="display: none;">
           <p class="lead">
             <span class="locked-ground">Locked Ground</span> is an acoustic-semiotic construct
             in which <span class="accent">Alexander Chiesa’s</span>
@@ -679,8 +744,8 @@ body::after {
 
           <p class="split">
             Six tracks form a binary cycle:<br>
-            <span>three focus on the voice as an autonomous sonic object</span><br>
-            <span>three explore its interaction with rhythm</span>
+            <span class="bullet-line"><span class="bullet-point">●</span> three focus on the voice as an autonomous sonic object</span>
+            <span class="bullet-line"><span class="bullet-point">●</span> three explore its interaction with rhythm</span>
           </p>
 
           <p>
@@ -708,7 +773,7 @@ body::after {
     </div>
   </div>
 
-  <!-- ПРАВАЯ КОЛОНКА (десктоп) с увеличенной картинкой по умолчанию -->
+  <!-- ПРАВАЯ КОЛОНКА (десктоп) -->
   <div class="right" id="desktopRight">
     <div class="desktop-image-container">
       <img src="image.jpg" class="cover" alt="Locked Ground cover" id="desktopCover">
@@ -736,30 +801,49 @@ let isAnimating = false;
 
 function toggleLang() {
   if (isAnimating) return;
-  
   isAnimating = true;
   
   const ru = document.getElementById("ru");
   const en = document.getElementById("en");
-  const currentActive = currentLang === "ru" ? ru : en;
-  const nextActive = currentLang === "ru" ? en : ru;
+  const currentText = currentLang === "ru" ? ru : en;
+  const nextText = currentLang === "ru" ? en : ru;
+  const nextLang = currentLang === "ru" ? "en" : "ru";
   
-  currentActive.style.opacity = "0";
-  currentActive.style.visibility = "hidden";
+  // Добавляем класс анимации вылета для всех строк текущего текста
+  const currentParagraphs = currentText.querySelectorAll('p');
+  currentParagraphs.forEach(p => {
+    p.classList.add('text-exit');
+  });
   
+  // Ждем окончания анимации вылета
   setTimeout(() => {
-    ru.classList.toggle("active");
-    en.classList.toggle("active");
+    // Скрываем текущий текст
+    currentText.style.display = "none";
     
-    nextActive.style.opacity = "1";
-    nextActive.style.visibility = "visible";
+    // Показываем новый текст
+    nextText.style.display = "block";
     
-    currentLang = currentLang === "ru" ? "en" : "ru";
+    // Убираем класс вылета у текущего текста
+    currentParagraphs.forEach(p => {
+      p.classList.remove('text-exit');
+    });
+    
+    // Добавляем класс влета для строк нового текста
+    const nextParagraphs = nextText.querySelectorAll('p');
+    nextParagraphs.forEach((p, index) => {
+      p.classList.add('text-enter');
+      // Убираем класс после анимации
+      setTimeout(() => {
+        p.classList.remove('text-enter');
+      }, 600);
+    });
+    
+    currentLang = nextLang;
     
     setTimeout(() => {
       isAnimating = false;
-    }, 100);
-  }, 200);
+    }, 200);
+  }, 400);
 }
 
 // Функция для раздвигания картинки на мобильных
@@ -807,14 +891,18 @@ function toggleDesktopImageExpand(event) {
 }
 
 window.onload = () => {
-  // Устанавливаем начальные стили для плавного фейда
+  // Устанавливаем начальные анимации для строк
   const ru = document.getElementById("ru");
-  const en = document.getElementById("en");
+  const ruParagraphs = ru.querySelectorAll('p');
+  ruParagraphs.forEach((p, index) => {
+    p.style.animationDelay = `${index * 0.05}s`;
+    p.classList.add('text-enter');
+    setTimeout(() => {
+      p.classList.remove('text-enter');
+    }, 600);
+  });
   
-  ru.style.opacity = "1";
-  ru.style.visibility = "visible";
-  en.style.opacity = "0";
-  en.style.visibility = "hidden";
+  ru.style.display = "block";
   
   if(navigator.language && navigator.language.startsWith("en")){
     toggleLang();
@@ -845,7 +933,7 @@ window.onload = () => {
   }
 }
 
-// параллакс на десктопе (только для не увеличенного состояния, чтобы не конфликтовать)
+// параллакс на десктопе
 const cover = document.querySelector(".cover");
 if(cover) {
   document.addEventListener("mousemove", (e) => {
