@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
 <title>Copycat Department</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * {
   margin: 0;
@@ -117,6 +117,19 @@ body::before {
   margin-bottom: 18px;
 }
 
+/* выделение Locked Ground */
+.locked-ground {
+  font-weight: 800;
+  font-size: 1.25em;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 8px rgba(255,255,255,0.3);
+  display: inline-block;
+}
+
 .lead { 
   font-size: 20px; 
   color: #fff; 
@@ -160,6 +173,7 @@ body::before {
   display: block;
   border-radius: 4px;
   box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+  cursor: pointer;
 }
 
 .links {
@@ -189,7 +203,7 @@ body::before {
   opacity: 0.8;
 }
 
-/* ----- МОБИЛЬНАЯ ВЕРСИЯ (оптимизировано под один экран) ----- */
+/* ----- МОБИЛЬНАЯ ВЕРСИЯ ----- */
 @media (max-width: 900px) {
   .container {
     flex-direction: column;
@@ -213,30 +227,59 @@ body::before {
   .mobile-assets {
     display: block;
     width: 100%;
-    margin: 0 0 20px 0;
+    margin: 0 0 0 0;
     text-align: center;
   }
   
-  /* Уменьшенная картинка — 50% ширины экрана, компактно */
+  /* Контейнер для картинки с анимацией */
+  .mobile-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    margin-bottom: 0;
+  }
+  
+  /* Картинка в мобильной версии */
   .cover-mobile {
     width: 45%;
     max-width: 160px;
     min-width: 130px;
-    margin: 0 auto 14px auto;
+    margin: 0 auto;
     display: block;
-    border-radius: 6px;
+    border-radius: 8px;
     box-shadow: 0 12px 24px -8px rgba(0,0,0,0.6);
-    transition: transform 0.2s;
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    cursor: pointer;
   }
   
-  /* Горизонтальные ссылки-кнопки, компактно */
+  /* Раздвинутое состояние картинки */
+  .mobile-assets.expanded .mobile-image-container {
+    margin-bottom: 20px;
+  }
+  
+  .mobile-assets.expanded .cover-mobile {
+    width: 85%;
+    max-width: 280px;
+    box-shadow: 0 20px 40px -12px rgba(0,0,0,0.8);
+  }
+  
+  /* Контейнер для ссылок с анимацией */
+  .links-mobile-wrapper {
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    overflow: hidden;
+  }
+  
+  /* Горизонтальные ссылки-кнопки */
   .links-mobile {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
-    margin: 6px 0 4px 0;
+    margin: 12px 0 4px 0;
+    transition: all 0.3s ease;
   }
   
   .links-mobile a {
@@ -265,11 +308,17 @@ body::before {
     padding: 6px 14px !important;
   }
   
-  /* Текстовая часть — компактно, без лишних отступов */
+  /* Текстовая часть с плавным смещением */
   .text-wrapper {
     position: relative;
     margin-top: 8px;
     min-height: auto;
+    transition: margin-top 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  }
+  
+  /* Когда картинка раздвинута, текст отодвигается вниз */
+  .mobile-assets.expanded ~ .text-wrapper {
+    margin-top: 24px;
   }
   
   .text {
@@ -296,6 +345,14 @@ body::before {
     margin-bottom: 14px;
   }
   
+  /* Увеличенное выделение Locked Ground в мобильной версии */
+  .locked-ground {
+    font-size: 1.3em;
+    font-weight: 800;
+    display: inline-block;
+    margin: 0 2px;
+  }
+  
   .split span {
     margin-left: 12px;
     font-size: 13px;
@@ -307,7 +364,6 @@ body::before {
     opacity: 0.6;
   }
   
-  /* Убираем лишние отступы, чтобы влезало в экран */
   .left {
     gap: 0;
   }
@@ -318,7 +374,7 @@ body::before {
   }
 }
 
-/* Очень маленькие экраны (iPhone SE, 375px и меньше) — еще компактнее */
+/* Очень маленькие экраны */
 @media (max-width: 480px) {
   .container {
     padding: 16px 16px 24px 16px;
@@ -332,7 +388,11 @@ body::before {
   .cover-mobile {
     width: 40%;
     max-width: 130px;
-    margin-bottom: 10px;
+  }
+  
+  .mobile-assets.expanded .cover-mobile {
+    width: 80%;
+    max-width: 240px;
   }
   
   .links-mobile {
@@ -353,6 +413,10 @@ body::before {
     font-size: 15px;
   }
   
+  .locked-ground {
+    font-size: 1.25em;
+  }
+  
   .split span {
     font-size: 12px;
     margin-left: 10px;
@@ -364,6 +428,10 @@ body::before {
   
   .text-wrapper {
     margin-top: 4px;
+  }
+  
+  .mobile-assets.expanded ~ .text-wrapper {
+    margin-top: 20px;
   }
 }
 
@@ -385,16 +453,20 @@ body::before {
   <div class="left">
     <h1>Copycat<br>Department</h1>
     
-    <!-- Мобильная вставка: уменьшенная картинка + компактные горизонтальные ссылки -->
-    <div class="mobile-assets">
-      <img src="image.jpg" alt="Locked Ground cover" class="cover-mobile">
-      <div class="links-mobile">
-        <a href="#">▶ Bandcamp</a>
-        <a href="#">▶ Spotify</a>
-        <a href="#">▶ Apple Music</a>
-        <a href="#">▶ Soundcloud</a>
-        <a href="#">▶ Beatport</a>
-        <a href="#" class="ig-mobile">📷 Instagram</a>
+    <!-- Мобильная вставка с анимацией -->
+    <div class="mobile-assets" id="mobileAssets">
+      <div class="mobile-image-container" id="mobileImageContainer">
+        <img src="image.jpg" alt="Locked Ground cover" class="cover-mobile" id="mobileCover">
+      </div>
+      <div class="links-mobile-wrapper">
+        <div class="links-mobile">
+          <a href="#">▶ Bandcamp</a>
+          <a href="#">▶ Spotify</a>
+          <a href="#">▶ Apple Music</a>
+          <a href="#">▶ Soundcloud</a>
+          <a href="#">▶ Beatport</a>
+          <a href="#" class="ig-mobile">📷 Instagram</a>
+        </div>
       </div>
     </div>
 
@@ -402,7 +474,7 @@ body::before {
       <!-- RU -->
       <div class="text active" id="ru">
         <p class="lead">
-          <i>Locked Ground</i> — это акустико-семиотическая конструкция,
+          <span class="locked-ground">Locked Ground</span> — это акустико-семиотическая конструкция,
           в которой биографический транзит <span class="accent">Александра Кьеза</span>
           из Италии в Россию артикулируется через полилингвальный корпус семплов,
           функционирующих как фоно-археологические артефакты памяти.
@@ -427,7 +499,7 @@ body::before {
         </p>
 
         <p>
-          Название <i>Locked Ground</i> — метафора фиксированной идентичности
+          Название <span class="locked-ground">Locked Ground</span> — метафора фиксированной идентичности
           и потенциальной территории звука.
         </p>
 
@@ -446,7 +518,7 @@ body::before {
       <!-- EN -->
       <div class="text" id="en">
         <p class="lead">
-          <i>Locked Ground</i> is an acoustic-semiotic construct
+          <span class="locked-ground">Locked Ground</span> is an acoustic-semiotic construct
           in which <span class="accent">Alexander Chiesa’s</span>
           transition from Italy to Russia is articulated
           through a polylingual body of voice samples.
@@ -471,7 +543,7 @@ body::before {
         </p>
 
         <p>
-          The title <i>Locked Ground</i> functions as both fixed identity
+          The title <span class="locked-ground">Locked Ground</span> functions as both fixed identity
           and potential sonic territory awaiting excavation.
         </p>
 
@@ -506,6 +578,7 @@ body::before {
 
 <script>
 let currentLang = "ru";
+let isExpanded = false;
 
 function toggleLang(){
   const ru = document.getElementById("ru");
@@ -515,9 +588,36 @@ function toggleLang(){
   currentLang = ru.classList.contains("active") ? "ru" : "en";
 }
 
+// Функция для раздвигания/сдвигания картинки на мобильных
+function toggleImageExpand() {
+  if (window.innerWidth > 900) return; // только на мобильных
+  
+  const mobileAssets = document.getElementById("mobileAssets");
+  if (!mobileAssets) return;
+  
+  isExpanded = !isExpanded;
+  
+  if (isExpanded) {
+    mobileAssets.classList.add("expanded");
+  } else {
+    mobileAssets.classList.remove("expanded");
+  }
+}
+
 window.onload = () => {
   if(navigator.language && navigator.language.startsWith("en")){
     toggleLang();
+  }
+  
+  // Добавляем обработчик клика на картинку в мобильной версии
+  const mobileCover = document.getElementById("mobileCover");
+  const mobileImageContainer = document.getElementById("mobileImageContainer");
+  
+  if (mobileCover) {
+    mobileCover.addEventListener("click", toggleImageExpand);
+  }
+  if (mobileImageContainer) {
+    mobileImageContainer.addEventListener("click", toggleImageExpand);
   }
 }
 
@@ -534,6 +634,17 @@ if(cover) {
     }
   });
 }
+
+// При изменении размера окна сбрасываем состояние, если стало десктопом
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 900 && isExpanded) {
+    const mobileAssets = document.getElementById("mobileAssets");
+    if (mobileAssets) {
+      mobileAssets.classList.remove("expanded");
+      isExpanded = false;
+    }
+  }
+});
 </script>
 
 </body>
