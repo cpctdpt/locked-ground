@@ -222,6 +222,7 @@ h1 {
   max-width: var(--desktop-cover-size);
   margin-top: 12px;
   margin-left: auto;
+  justify-items: end;
 }
 
 .links a {
