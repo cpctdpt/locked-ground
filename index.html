@@ -29,6 +29,26 @@
       switchBtn.textContent = 'RU';
     }
   }
+
+    // Mobile cover interaction
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileAssets = document.getElementById('mobileAssets');
+    const mobileCover = document.getElementById('mobileCover');
+    
+    if (mobileCover && mobileAssets) {
+      mobileCover.addEventListener('click', function() {
+        mobileAssets.classList.toggle('expanded');
+      });
+      
+      // Close expanded view when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!mobileAssets.contains(e.target) && mobileAssets.classList.contains('expanded')) {
+          mobileAssets.classList.remove('expanded');
+        }
+      });
+    }
+  });
+  
 </script>
 <body>
 
